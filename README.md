@@ -58,6 +58,62 @@ This project aims to develop an intuitive human–robot interaction system where
 
 The ReAct (Reasoning and Acting) framework enhances decision-making by combining perception with reasoning, enabling more robust interpretation of user intentions and safer robot behavior.
 
+## Preresiquite
+### Install on MacOS
+1. Install Docker Desktop and run
+To check docker version,
+docker --version
+
+To verify docker is running,
+docker run hello-world
+
+2. Create ROS2 Project
+mkdir ros2-workspace
+cd ros2-workspace
+mkdir src
+mkdir docker
+
+3. Create Docker file
+- Create Dockerfile in folder docker (without .something).
+- In the project root (folder ros2-workspace), create docker-compose.yml.
+
+4. Build the Image
+In the project root, type docker compose build on CLI.
+
+5. Start the Container
+docker compose up -d
+Verify that docker is running 
+docker ps
+
+6. Enter the Container 
+docker exec -it ros2_jazzy bash
+Inside the container, source ROS2:
+source /opt/ros/jazzy/setup.bash
+To verify, type
+ros2
+The ROS2 command-line help shows.
+
+7. Create a work space
+Inside the container,
+mkdir -p src
+colcon build
+source install/setup.bash
+
+8. Test ROS2
+Open Terminal, 
+docker exec -it ros2_jazzy bash
+source /opt/ros/jazzy/setup.bash
+
+ros2 run demo_nodes_cpp talker
+
+Open another Terminal.
+docker exec -it ros2_jazzy bash
+source /opt/ros/jazzy/setup.bash
+ros2 run demo_nodes_cpp listener
+
+Testing ROS2 finishes here.
+
+
 ## 🎯 Example Robot Commands
 
 | Hand Gesture | Robot Action |
