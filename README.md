@@ -1,7 +1,3 @@
-Here's a professional GitHub project description that clearly explains the project's purpose, architecture, and technologies.
-
----
-
 # 🦿 Hand Gesture-Based Quadruped Robot Control
 
 An intelligent robot control system that enables **real-time control of a quadruped robot using hand gestures**. The system leverages computer vision to recognize hand gestures from a webcam and employs an AI-powered reasoning agent to translate user intentions into robot motion commands. The solution supports both **Gazebo simulation** and deployment on a physical robot through **ROS2**.
