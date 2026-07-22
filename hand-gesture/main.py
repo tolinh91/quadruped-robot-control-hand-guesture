@@ -1,12 +1,17 @@
 import cv2
+from pathlib import Path
 
 from camera import Camera
 from hand_detector import HandDetector
 
-MODEL = "models/best-yolo26n-100epochs.onnx"
+ROOT_DIR = Path(__file__).resolve().parent
+MODEL = ROOT_DIR / "models" / "best-yolo11n-100epochs.onnx"
 CAMERA_ID = 0
 IMG_SIZE = 640
 CONFIDENCE = 0.5
+
+if not MODEL.exists():
+    raise FileNotFoundError(f"Model file not found: {MODEL}")
 
 camera = Camera(CAMERA_ID)
 

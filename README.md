@@ -59,7 +59,7 @@ This project aims to develop an intuitive human–robot interaction system where
 The ReAct (Reasoning and Acting) framework enhances decision-making by combining perception with reasoning, enabling more robust interpretation of user intentions and safer robot behavior.
 
 ## Preresiquite
-### Install on MacOS
+### Install and run docker on MacOS
 1. Install Docker Desktop and run
 To check docker version,
 docker --version
@@ -112,6 +112,32 @@ source /opt/ros/jazzy/setup.bash
 ros2 run demo_nodes_cpp listener
 
 Testing ROS2 finishes here.
+
+### Install Gazebo in Docker container
+After installing Gazebo in Step 1, you can launch Gazebo Sim, a 3D robotics simulator, from a terminal.
+
+1. aunch Gazebo by running:
+
+gz sim shapes.sdf  # Fortress uses "ign gazebo" instead of "gz sim"
+This command will launch both the Sim server and Sim GUI with a world that contains six simple shapes.
+
+Add the -v 4 command line argument to generate error, warning, informational, and debugging messages on the console.
+
+gz sim shapes.sdf -v 4  # Fortress uses "ign gazebo" instead of "gz sim"
+Gazebo Sim can also be run headless, i.e. without the GUI, by using the -s (server only) flag.
+
+gz sim -s shapes.sdf -v 4  # Fortress uses "ign gazebo" instead of "gz sim"
+
+2. Configure package repositories for Gazebo Sim
+
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo apt-get update
+
+sudo apt-get install libgz-sim<#>-dev
+
+
+### Create a robot description package
 
 
 ## 🎯 Example Robot Commands
