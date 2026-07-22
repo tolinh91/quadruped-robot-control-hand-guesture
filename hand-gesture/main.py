@@ -3,7 +3,7 @@ import cv2
 from camera import Camera
 from hand_detector import HandDetector
 
-MODEL = "best.pt"
+MODEL = "model/best-yolo26n-pose.onnx"
 CAMERA_ID = 0
 IMG_SIZE = 640
 CONFIDENCE = 0.5
