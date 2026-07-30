@@ -9,40 +9,13 @@ from src.hand_detector import HandDetector
 
 ROOT_DIR = Path(__file__).resolve().parent
 
-YOLO_MODEL = ROOT_DIR / "models" / "best-yolo26s-100epochs.onnx"
+YOLO_MODEL = ROOT_DIR / "models" / "best-yolo26s-v2-finetuned.onnx"
 GESTURE_MODEL = ROOT_DIR / "models" / "gesture_classifier_xgb.pkl"
 
 CAMERA_ID = 0
-IMG_SIZE = 640
+IMG_SIZE = 800
 HAND_CONF_THRESHOLD = 0.35
 GESTURE_CONF_THRESHOLD = 0.5
-
-
-def extract_hands_keypoints(result):
-    if result is None or len(result) == 0:
-        return []
-
-    pts_all = np.array(result, dtype=np.float32)
-    hands = []
-
-    # Trường hợp 1: Chỉ phát hiện 1 bàn tay -> shape (21, 2) hoặc (21, 3)
-    if pts_all.ndim == 2:
-        if pts_all.shape == (21, 2):
-            z_zero = np.zeros((21, 1), dtype=np.float32)
-            pts_all = np.hstack([pts_all, z_zero])
-        if pts_all.shape == (21, 3):
-            hands.append(pts_all)
-
-    # Trường hợp 2: Phát hiện nhiều bàn tay (2, 3, 4...) -> shape (N, 21, 2) hoặc (N, 21, 3)
-    elif pts_all.ndim == 3:
-        for single_hand in pts_all:
-            if single_hand.shape == (21, 2):
-                z_zero = np.zeros((21, 1), dtype=np.float32)
-                single_hand = np.hstack([single_hand, z_zero])
-            if single_hand.shape == (21, 3):
-                hands.append(single_hand)
-
-    return hands
 
 
 def main():
@@ -70,7 +43,7 @@ def main():
             output, results = detector.detect(frame)
 
             # 2. Tách dữ liệu ra danh sách các bàn tay (N x 21 x 3)
-            hands_list = extract_hands_keypoints(results)
+            hands_list = detector.extract_hands_keypoints(results)
 
             # 3. Lặp qua từng bàn tay tìm thấy
             for idx, pts in enumerate(hands_list):
@@ -96,7 +69,10 @@ def main():
 
                 # Vẽ nền màu đen phía sau chữ giúp xem rõ hơn
                 (text_w, text_h), baseline = cv2.getTextSize(
-                    text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2
+                    text, 
+                    cv2.FONT_HERSHEY_SIMPLEX, 
+                    0.6, 
+                    2
                 )
                 cv2.rectangle(
                     output,
@@ -137,7 +113,6 @@ def main():
 
             # Display
             cv2.imshow("Hand Detector & Gesture Recognition", output)
-
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 print("[+] Exiting.")
                 break
