@@ -20,7 +20,7 @@ from gesture_classifier import GestureClassifier
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
-DATASET_PATH = ROOT_DIR / "datasets" / "hagrid_dataset.csv"
+DATASET_PATH = ROOT_DIR / "datasets" / "gesture_dataset.csv"
 MODEL_SAVE_PATH = ROOT_DIR / "models" / "gesture_classifier_rf.pkl"
 
 
