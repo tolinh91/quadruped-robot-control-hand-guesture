@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 HAGRID_DATASET_DIR = ROOT_DIR / "datasets" / "hagrid"
-OUTPUT_CSV_PATH = ROOT_DIR / "datasets" / "hagrid_dataset.csv"
+OUTPUT_CSV_PATH = ROOT_DIR / "datasets" / "gesture_dataset.csv"
 
 LABELS = ["dislike", "fist", "like", "one", "palm", "peace", "rock"]
 
