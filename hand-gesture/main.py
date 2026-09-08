@@ -1,3 +1,6 @@
+import argparse
+import os
+import sys
 import time
 from pathlib import Path
 import cv2
@@ -36,6 +39,17 @@ class GesturePublisher(Node):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Recognize and publish hand gestures.")
+    parser.add_argument(
+        "--no-display", action="store_true", help="Run without the OpenCV preview window."
+    )
+    # Leave ROS arguments for rclpy to parse.
+    args = parser.parse_args(rclpy.utilities.remove_ros_args()[1:])
+    show_preview = not args.no_display
+    if show_preview and sys.platform.startswith("linux") and not os.environ.get("DISPLAY", "").strip():
+        print("[!] DISPLAY is unset; running without the preview window.")
+        show_preview = False
+
     print("[+] Starting Camera & Models.")
     camera = Camera(CAMERA_ID)
 
@@ -50,10 +64,10 @@ def main():
     gesture_publisher = GesturePublisher()
 
     prev_time = time.time()
-    print("[+] Starting recognition, press 'q' to quit.")
+    print("[+] Starting recognition, " + ("press 'q' to quit." if show_preview else "press Ctrl+C to quit."))
 
     try:
-        while True:
+        while rclpy.ok():
             ret, frame = camera.read()
             if not ret or frame is None:
                 print("[-] Can't read data from Camera.")
@@ -133,16 +147,21 @@ def main():
             )
 
             # Display
-            cv2.imshow("Hand Detector & Gesture Recognition", output)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                print("[+] Exiting.")
-                break
+            if show_preview:
+                cv2.imshow("Hand Detector & Gesture Recognition", output)
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    print("[+] Exiting.")
+                    break
 
+    except KeyboardInterrupt:
+        print("[+] Exiting.")
     finally:
         camera.release()
-        cv2.destroyAllWindows()
+        if show_preview:
+            cv2.destroyAllWindows()
         gesture_publisher.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

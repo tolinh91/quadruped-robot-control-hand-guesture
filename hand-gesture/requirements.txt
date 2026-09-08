@@ -1,0 +1,11 @@
+# Runtime dependencies for camera-based gesture recognition and ROS 2 publishing.
+# Use CPU PyTorch wheels: this project runs ONNX inference and does not require CUDA.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
+torchvision==0.20.1+cpu
+ultralytics>=8.3,<9
+onnx>=1.16
+onnxruntime>=1.19
+joblib>=1.4
+scikit-learn>=1.5
+xgboost>=2.1
