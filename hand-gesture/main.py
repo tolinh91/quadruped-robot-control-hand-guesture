@@ -3,6 +3,10 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
 from src.camera import Camera
 from src.gesture_classifier import GestureClassifier
 from src.hand_detector import HandDetector
@@ -18,6 +22,19 @@ HAND_CONF_THRESHOLD = 0.35
 GESTURE_CONF_THRESHOLD = 0.5
 
 
+class GesturePublisher(Node):
+    """Publishes recognized gesture labels to `hand_gesture` for the robot controller."""
+
+    def __init__(self):
+        super().__init__('hand_gesture_publisher')
+        self.publisher = self.create_publisher(String, 'hand_gesture', 10)
+
+    def publish(self, gesture_name):
+        msg = String()
+        msg.data = gesture_name
+        self.publisher.publish(msg)
+
+
 def main():
     print("[+] Starting Camera & Models.")
     camera = Camera(CAMERA_ID)
@@ -28,6 +45,9 @@ def main():
         conf=HAND_CONF_THRESHOLD,
     )
     classifier = GestureClassifier(str(GESTURE_MODEL))
+
+    rclpy.init()
+    gesture_publisher = GesturePublisher()
 
     prev_time = time.time()
     print("[+] Starting recognition, press 'q' to quit.")
@@ -54,6 +74,7 @@ def main():
                 if confidence >= GESTURE_CONF_THRESHOLD:
                     text = f"Hand #{idx+1}: {gesture_name} ({confidence * 100:.0f}%)"
                     color = (0, 255, 0)  # Xanh lá
+                    gesture_publisher.publish(gesture_name)
                 else:
                     text = f"Hand #{idx+1}: Unknown"
                     color = (0, 0, 255)  # Đỏ
@@ -120,6 +141,8 @@ def main():
     finally:
         camera.release()
         cv2.destroyAllWindows()
+        gesture_publisher.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == "__main__":
