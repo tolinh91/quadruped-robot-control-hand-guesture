@@ -17,7 +17,7 @@ from src.hand_detector import HandDetector
 ROOT_DIR = Path(__file__).resolve().parent
 
 YOLO_MODEL = ROOT_DIR / "models" / "best-yolo26s-100epochs.onnx"
-GESTURE_MODEL = ROOT_DIR / "models" / "gesture_classifier_xgb.pkl"
+GESTURE_MODEL = ROOT_DIR / "models" / "gesture_classifier_lightgbm.pkl"
 
 CAMERA_ID = 0
 IMG_SIZE = 800
